@@ -7,7 +7,7 @@ fn main() {
     let mut right = Vec::<i64>::new();
 
     for l in input.split("\n") {
-        let ids: Vec::<&str> = l.splitn(2, "   ").collect();
+        let ids: Vec<&str> = l.splitn(2, "   ").collect();
 
         left.push(ids[0].parse().unwrap());
         right.push(ids[1].parse().unwrap());
@@ -25,7 +25,10 @@ fn main() {
 
     let mut right_occurances = HashMap::<i64, i64>::new();
     for id in right {
-        right_occurances.entry(id).and_modify(|e| *e+=1).or_insert(1);
+        right_occurances
+            .entry(id)
+            .and_modify(|e| *e += 1)
+            .or_insert(1);
     }
     let mut part2 = 0;
     for id in left {
