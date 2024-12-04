@@ -69,7 +69,7 @@ impl Mul {
 
         current_idx += 1;
 
-        let right :i64;
+        let right: i64;
         match parse_number(&chars[current_idx..]) {
             Some((num, consumed)) => {
                 right = num;
