@@ -9,7 +9,7 @@ fn main() {
         .lines()
         .map(|l| l.split(',').map(|s| s.parse().unwrap()).collect())
         .collect();
-    
+
     // Store a hashset of all the tuples
     let mut rule_tuples = HashSet::<(i64, i64)>::new();
     for rule in ordering_rules.lines() {
