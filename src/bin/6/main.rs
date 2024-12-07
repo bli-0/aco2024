@@ -1,4 +1,3 @@
-use core::panic;
 use std::collections::HashSet;
 
 const WALL_OBSTACLE: char = '#';
