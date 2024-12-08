@@ -31,7 +31,7 @@ impl Input {
         Self { target, nums }
     }
 
-    fn is_truthy(&self, current: i64, index: usize, include_concat: bool) -> bool {
+    fn is_truthy(&self, current: i64, index: usize, _include_concat: bool) -> bool {
         if current > self.target || index >= self.nums.len() {
             return false;
         }
@@ -41,7 +41,7 @@ impl Input {
             return true;
         }
 
-        if self.is_truthy(addition_current, index + 1, include_concat) {
+        if self.is_truthy(addition_current, index + 1, _include_concat) {
             return true;
         }
 
@@ -49,7 +49,7 @@ impl Input {
         if index == self.nums.len() - 1 && multiplication_current == self.target {
             return true;
         }
-        if self.is_truthy(multiplication_current, index + 1, include_concat) {
+        if self.is_truthy(multiplication_current, index + 1, _include_concat) {
             return true;
         }
 
@@ -57,7 +57,7 @@ impl Input {
         if index == self.nums.len() - 1 && concatination_current == self.target {
             return true;
         }
-        if self.is_truthy(concatination_current, index + 1, include_concat) {
+        if self.is_truthy(concatination_current, index + 1, _include_concat) {
             return true;
         }
 
