@@ -1,7 +1,4 @@
-use std::{
-    fs::File,
-    io::Write,
-};
+use std::{fs::File, io::Write};
 
 fn main() {
     let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/inputs/14"));
@@ -56,7 +53,7 @@ fn main() {
         if all_eq {
             break;
         }
-        iter +=1;
+        iter += 1;
     }
 }
 
