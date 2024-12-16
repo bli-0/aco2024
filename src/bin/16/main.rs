@@ -1,4 +1,4 @@
-use std::collections::{BinaryHeap, HashMap};
+use std::collections::{BinaryHeap, HashMap, HashSet};
 
 fn main() {
     let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/inputs/16"));
@@ -13,21 +13,28 @@ fn main() {
         }
     }
 
-    let part1 = search(start_position, &grid);
+    let (part1, part2) = search(start_position, &grid);
     println!("part1: {}", part1);
+    println!("part2: {}", part2);
 }
 
 // Search for best time using A*.
-fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
+fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> (i64, i64) {
     let score = 0;
     let mut queue = BinaryHeap::new();
 
+    let mut best_score = i64::MAX;
+    let mut best_path_coords = HashSet::<(usize, usize)>::new();
+
     // Every positon + direction pair keeps track of the best score so we can optimise away paths.
     let mut best_scores: HashMap<((usize, usize), Direction), i64> = HashMap::new();
+    let mut path = HashSet::new();
+    path.insert(start_position);
     queue.push(State {
         position: start_position,
         score,
         direction: Direction::East,
+        current_path: path,
     });
 
     while let Some(current) = queue.pop() {
@@ -40,8 +47,14 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
         } else {
             best_scores.insert((current.position, current.direction), current.score);
         }
+        if current.score > best_score {
+            continue;
+        }
         if grid[current.position.1][current.position.0] == 'E' {
-            return current.score;
+            best_score = current.score;
+            for p in &current.current_path {
+                best_path_coords.insert(*p);
+            }
         }
 
         {
@@ -51,6 +64,7 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
                 position: current.position,
                 score: new_score,
                 direction: new_direction,
+                current_path: current.current_path.clone(),
             });
         }
 
@@ -61,6 +75,7 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
                 position: current.position,
                 score: new_score,
                 direction: new_direction,
+                current_path: current.current_path.clone(),
             });
         }
 
@@ -70,10 +85,13 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
                 Direction::East => {
                     if grid[current.position.1][current.position.0 + 1] != '#' {
                         let new_position = (current.position.0 + 1, current.position.1);
+                        let mut next_path = current.current_path.clone();
+                        next_path.insert((current.position.0 + 1, current.position.1));
                         queue.push(State {
                             position: new_position,
                             score: current.score + 1,
                             direction: current.direction,
+                            current_path: next_path,
                         });
                         continue;
                     }
@@ -81,10 +99,13 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
                 Direction::North => {
                     if grid[current.position.1 - 1][current.position.0] != '#' {
                         let new_position = (current.position.0, current.position.1 - 1);
+                        let mut next_path = current.current_path;
+                        next_path.insert((current.position.0, current.position.1 - 1));
                         queue.push(State {
                             position: new_position,
                             score: current.score + 1,
                             direction: current.direction,
+                            current_path: next_path,
                         });
                         continue;
                     }
@@ -92,10 +113,13 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
                 Direction::West => {
                     if grid[current.position.1][current.position.0 - 1] != '#' {
                         let new_position = (current.position.0 - 1, current.position.1);
+                        let mut next_path = current.current_path;
+                        next_path.insert((current.position.0 - 1, current.position.1));
                         queue.push(State {
                             position: new_position,
                             score: current.score + 1,
                             direction: current.direction,
+                            current_path: next_path,
                         });
                         continue;
                     }
@@ -103,10 +127,13 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
                 Direction::South => {
                     if grid[current.position.1 + 1][current.position.0] != '#' {
                         let new_position = (current.position.0, current.position.1 + 1);
+                        let mut next_path = current.current_path;
+                        next_path.insert((current.position.0, current.position.1 + 1));
                         queue.push(State {
                             position: new_position,
                             score: current.score + 1,
                             direction: current.direction,
+                            current_path: next_path,
                         });
                         continue;
                     }
@@ -115,14 +142,15 @@ fn search(start_position: (usize, usize), grid: &[Vec<char>]) -> i64 {
         }
     }
 
-    panic!("not found");
+    (best_score, best_path_coords.len() as i64)
 }
 
-#[derive(PartialEq, Eq, Debug, Hash, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 struct State {
     position: (usize, usize),
     score: i64,
     direction: Direction,
+    current_path: HashSet<(usize, usize)>,
 }
 
 impl Ord for State {
