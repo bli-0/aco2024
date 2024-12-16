@@ -236,8 +236,6 @@ impl Grid {
                             }
                         }
                         // If we get here, then check if we are blocked - if we are not the we need to do a move.
-                        println!("{:?}", next_blocking_indices);
-                        println!("{:?}", box_positions);
                         current_blocking_indicies = next_blocking_indices;
                         current_y -= 1;
                     }
