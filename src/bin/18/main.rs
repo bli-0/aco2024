@@ -13,7 +13,7 @@ fn main() {
 
     let mut initial_obstacles = HashSet::<(i64, i64)>::new();
     let obstacle_limit = 1024;
-    for obstacle in  all_obstacles.iter().take(obstacle_limit) {
+    for obstacle in all_obstacles.iter().take(obstacle_limit) {
         initial_obstacles.insert(*obstacle);
     }
 
