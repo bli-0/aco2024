@@ -24,10 +24,7 @@ impl Problem {
         let towels = towels.split(',').map(|s| s.trim().to_string()).collect();
         let problems: Vec<String> = designs.split('\n').map(|s| s.to_string()).collect();
 
-        Self {
-            towels,
-            problems,
-        }
+        Self { towels, problems }
     }
 
     fn solve(&self) -> i64 {

@@ -6,13 +6,23 @@ fn main() {
     let grid = Grid::from_input(input);
 
     let path: HashMap<(usize, usize), i64> = grid.find_best_path();
-    let part1 = grid.count_cheats(path, 100);
+    let part1 = grid.count_cheats(path.clone(), 100);
     println!("part1: {}", part1);
 
     // part2:
     // can we just use the distances from the path map?
     // compare hamming distance between two points if the hamming distance is < actual distance
     // we can cheat to get there?
+    // 890554 too low
+    let part2 = grid.count_cheats2(path, 100, 20);
+    println!("part2: {}", part2);
+}
+
+fn ham_dist(l: (usize, usize), r: (usize, usize)) -> i64 {
+    let x_diff = (l.0 as i64 - r.0 as i64).abs();
+    let y_diff = (l.1 as i64 - r.1 as i64).abs();
+
+    x_diff + y_diff
 }
 
 struct Grid {
@@ -161,6 +171,37 @@ impl Grid {
                 }
             }
         }
+        count
+    }
+
+    fn count_cheats2(
+        &self,
+        path: HashMap<(usize, usize), i64>,
+        cheat_threshold: i64,
+        max_time: i64,
+    ) -> i64 {
+        let mut count = 0;
+        let mut path_by_dist: Vec<((usize, usize), i64)> =
+            path.into_iter().map(|item| (item.0, item.1)).collect();
+        path_by_dist.sort_by(|a, b| a.1.cmp(&b.1));
+
+        for i in 0..path_by_dist.len() {
+            for j in i + 1..path_by_dist.len() {
+                let start = path_by_dist[i];
+                let end = path_by_dist[j];
+                let path_distance: i64 = end.1 - start.1;
+                if path_distance < cheat_threshold {
+                    continue;
+                }
+
+                let cheat_time = ham_dist(start.0, end.0);
+                let time_saved = path_distance - cheat_time;
+                if cheat_time <= max_time && time_saved >= cheat_threshold {
+                    count += 1;
+                }
+            }
+        }
+
         count
     }
 }
