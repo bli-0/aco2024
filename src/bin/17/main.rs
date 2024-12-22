@@ -2,12 +2,7 @@ fn main() {
     let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/inputs/17"));
 
     let mut program = Program::from_str(input);
-    let instructions = program
-        .instructions
-        .clone()
-        .iter()
-        .map(|u| *u)
-        .collect::<Vec<u8>>();
+    let instructions = program.instructions.clone().to_vec();
 
     let part1 = program.execute();
     println!("part1 {:?}", part1);
@@ -132,12 +127,12 @@ impl Program {
                     let denominator = 2_i64
                         .checked_pow(self.get_combo_operand(operand).try_into().unwrap())
                         .unwrap();
-                    self.register_a = self.register_a / denominator;
+                    self.register_a /= denominator;
                 }
                 //bxl
                 1 => {
                     let literal_operand = operand as i64;
-                    self.register_b = self.register_b ^ literal_operand;
+                    self.register_b ^= literal_operand;
                 }
                 //bst
                 2 => {
@@ -153,7 +148,7 @@ impl Program {
                 }
                 // bxc
                 4 => {
-                    self.register_b = self.register_b ^ self.register_c;
+                    self.register_b ^= self.register_c;
                 }
                 // out
                 5 => {
