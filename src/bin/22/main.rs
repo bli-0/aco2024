@@ -68,7 +68,9 @@ impl Prices {
 
             let price: i8 = prices[i + 4];
 
-            sequence_to_first_price.entry((diff0, diff1, diff2, diff3)).or_insert(price);
+            sequence_to_first_price
+                .entry((diff0, diff1, diff2, diff3))
+                .or_insert(price);
         }
 
         Self {
